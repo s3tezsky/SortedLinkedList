@@ -1,6 +1,14 @@
 # Usage
 
-_// TBD_
+## Creation
+
+```php
+// The list may be created with initial values
+$list = new SortedLinkedList([5, 1, 8]); // The list is: 1 -> 5 -> 8]
+
+// This will add a 4 before 5
+$list->add(4); // The list is: 1 -> 4 -> 5 -> 8
+```
 
 # Development
 

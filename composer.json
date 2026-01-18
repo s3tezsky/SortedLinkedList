@@ -11,6 +11,17 @@
         "ecs": "vendor/bin/ecs",
         "ecs-fix": "vendor/bin/ecs --fix",
         "phpstan": "vendor/bin/phpstan analyse",
-        "tests-unit": "vendor/bin/phpunit tests"
+        "tests-unit": "vendor/bin/phpunit tests/Unit",
+        "tests-unit-coverage": "vendor/bin/phpunit tests/Unit --coverage-html tests/coverage"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
     }
 }
