@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\SortedLinkedList\NodeValueTypeMismatch;
 use App\SortedLinkedList\SortedLinkedList;
 use App\SortedLinkedList\UnsupportedTypeOfNodeValue;
-use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -61,7 +61,8 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddStringToSortedLinkedListFromIntegersThrowsException(): void
     {
-        $this->expectException(LogicException::class); // @todo
+        $this->expectException(NodeValueTypeMismatch::class);
+        $this->expectExceptionMessage('Value of type "string" cannot be added to this "App\SortedLinkedList\SortedLinkedList". Only type of "integer" can be added.');
 
         $sortedLinkedList = new SortedLinkedList([5]);
         $sortedLinkedList->add('Banana');
@@ -69,7 +70,8 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddStringToIntSortedLinkedListThrowsException(): void
     {
-        $this->expectException(LogicException::class); // @todo
+        $this->expectException(NodeValueTypeMismatch::class);
+        $this->expectExceptionMessage('Value of type "string" cannot be added to this "App\SortedLinkedList\SortedLinkedList". Only type of "integer" can be added.');
 
         $sortedLinkedList = new SortedLinkedList();
         $sortedLinkedList->add(5);
@@ -78,7 +80,8 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddIntToSortedLinkedListFromStringsThrowsException(): void
     {
-        $this->expectException(LogicException::class); // @todo
+        $this->expectException(NodeValueTypeMismatch::class);
+        $this->expectExceptionMessage('Value of type "integer" cannot be added to this "App\SortedLinkedList\SortedLinkedList". Only type of "string" can be added.');
 
         $sortedLinkedList = new SortedLinkedList(['Banana']);
         $sortedLinkedList->add(5);
@@ -86,7 +89,8 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddIntToStringSortedLinkedListThrowsException(): void
     {
-        $this->expectException(LogicException::class); // @todo
+        $this->expectException(NodeValueTypeMismatch::class);
+        $this->expectExceptionMessage('Value of type "integer" cannot be added to this "App\SortedLinkedList\SortedLinkedList". Only type of "string" can be added.');
 
         $sortedLinkedList = new SortedLinkedList();
         $sortedLinkedList->add('orange');

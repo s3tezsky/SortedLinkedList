@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\SortedLinkedList;
 
-use LogicException;
-
 class SortedLinkedList
 {
     private IntNode|StringNode|null $head = null;
@@ -52,11 +50,15 @@ class SortedLinkedList
 
     private function addInt(int $value): void
     {
-        $newNode = new IntNode($value);
-
         if (! ($this->head instanceof IntNode || $this->head === null)) {
-            throw new LogicException(); // @todo: Better exception
+            throw new NodeValueTypeMismatch(sprintf(
+                'Value of type "integer" cannot be added to this "%s". Only type of "%s" can be added.',
+                self::class,
+                gettype($this->head->value),
+            ));
         }
+
+        $newNode = new IntNode($value);
 
         if ($this->head === null || $newNode->value < $this->head->value) {
             $newNode->next = $this->head;
@@ -75,11 +77,15 @@ class SortedLinkedList
 
     private function addString(string $value): void
     {
-        $newNode = new StringNode($value);
-
         if (! ($this->head instanceof StringNode || $this->head === null)) {
-            throw new LogicException(); // @todo: Better exception
+            throw new NodeValueTypeMismatch(sprintf(
+                'Value of type "string" cannot be added to this "%s". Only type of "%s" can be added.',
+                self::class,
+                gettype($this->head->value),
+            ));
         }
+
+        $newNode = new StringNode($value);
 
         if ($this->head === null || strcasecmp($newNode->value, $this->head->value) < 0) {
             $newNode->next = $this->head;
