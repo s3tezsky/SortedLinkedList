@@ -1,6 +1,11 @@
-# Usage
+# SortedLinkedList
 
-## Creation
+**Disclaimer: This repository is only for testing purposes. It will not be maintained in the future.**
+
+SortedLinkedList allows you to create a linked list in given order - ascending or descending.
+It allows you to handle integers or string in a list (bot not both at the same time).
+
+## Usage
 
 ```php
 // The list may be created with initial values
@@ -9,7 +14,6 @@ $list = new SortedLinkedList([5, 1, 8]); // The list is: 1 -> 5 -> 8]
 // Allowed types are integers and strings only.
 // The exception UnsupportedTypeOfNodeValue is thrown in case of trying to construct SortedLinkedList with a different type.
 new SortedLinkedList([1.9]); // Throws UnsupportedTypeOfNodeValue exception
-
 
 // This will add a 4 before 5
 $list->add(4); // The list is: 1 -> 4 -> 5 -> 8
