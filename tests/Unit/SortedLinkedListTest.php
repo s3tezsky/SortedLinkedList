@@ -125,4 +125,31 @@ class SortedLinkedListTest extends TestCase
             [null, 'NULL'],
         ];
     }
+
+    /**
+     * @param array<int, int> $initialValues
+     * @param array<int, int> $addingValues
+     */
+    #[DataProvider('valuesForCountableTestDataProvider')]
+    public function testCountable(array $initialValues, array $addingValues, int $expectedCount): void
+    {
+        $list = new SortedLinkedList($initialValues);
+        foreach ($addingValues as $value) {
+            $list->add($value);
+        }
+
+        self::assertCount($expectedCount, $list);
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public static function valuesForCountableTestDataProvider(): array
+    {
+        return [
+            [[4, 5, 9], [], 3],
+            [[], [2, 1, 8], 3],
+            [[4, 8, 9], [2, 7, 8, 5], 7],
+        ];
+    }
 }

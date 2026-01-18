@@ -13,6 +13,9 @@ new SortedLinkedList([1.9]); // Throws UnsupportedTypeOfNodeValue exception
 
 // This will add a 4 before 5
 $list->add(4); // The list is: 1 -> 4 -> 5 -> 8
+
+// The list implements Countable so we can easily get its size
+count($list); // The result is: 4
 ```
 
 # Development

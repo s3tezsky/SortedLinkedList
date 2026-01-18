@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\SortedLinkedList;
 
-class SortedLinkedList
+use Countable;
+
+class SortedLinkedList implements Countable
 {
     private IntNode|StringNode|null $head = null;
 
@@ -46,6 +48,18 @@ class SortedLinkedList
             $current = $current->next;
         }
         return $values;
+    }
+
+    public function count(): int
+    {
+        $i = 0;
+        $currentNode = $this->head;
+        while ($currentNode !== null) {
+            $i++;
+            $currentNode = $currentNode->next;
+        }
+
+        return $i;
     }
 
     private function addInt(int $value): void
