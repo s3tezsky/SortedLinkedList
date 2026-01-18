@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\SortedLinkedList\SortedLinkedList;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 class SortedLinkedListTest extends TestCase
@@ -29,5 +30,63 @@ class SortedLinkedListTest extends TestCase
         $sortedLinkedList->add(5);
         $sortedLinkedList->add(2);
         self::assertSame([2, 5], $sortedLinkedList->toArray());
+    }
+
+    public function testCreateSortedLinkedListFromStrings(): void
+    {
+        $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple']);
+        self::assertSame(['apple', 'banana', 'mango', 'pineapple'], $sortedLinkedList->toArray());
+    }
+
+    public function testAddStringToSortedLinkedListFromStrings(): void
+    {
+        $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple']);
+        $sortedLinkedList->add('orange');
+        $sortedLinkedList->add('lemon');
+        self::assertSame(['apple', 'banana', 'lemon', 'mango', 'orange', 'pineapple'], $sortedLinkedList->toArray());
+    }
+
+    public function testAddStringToSortedLinkedList(): void
+    {
+        $sortedLinkedList = new SortedLinkedList();
+        $sortedLinkedList->add('orange');
+        $sortedLinkedList->add('Banana');
+        $sortedLinkedList->add('lemon');
+        $sortedLinkedList->add('Mango');
+        self::assertSame(['Banana', 'lemon', 'Mango', 'orange'], $sortedLinkedList->toArray());
+    }
+
+    public function testAddStringToSortedLinkedListFromIntegersThrowsException(): void
+    {
+        $this->expectException(LogicException::class); // @todo
+
+        $sortedLinkedList = new SortedLinkedList([5]);
+        $sortedLinkedList->add('Banana');
+    }
+
+    public function testAddStringToIntSortedLinkedListThrowsException(): void
+    {
+        $this->expectException(LogicException::class); // @todo
+
+        $sortedLinkedList = new SortedLinkedList();
+        $sortedLinkedList->add(5);
+        $sortedLinkedList->add('Banana');
+    }
+
+    public function testAddIntToSortedLinkedListFromStringsThrowsException(): void
+    {
+        $this->expectException(LogicException::class); // @todo
+
+        $sortedLinkedList = new SortedLinkedList(['Banana']);
+        $sortedLinkedList->add(5);
+    }
+
+    public function testAddIntToStringSortedLinkedListThrowsException(): void
+    {
+        $this->expectException(LogicException::class); // @todo
+
+        $sortedLinkedList = new SortedLinkedList();
+        $sortedLinkedList->add('orange');
+        $sortedLinkedList->add(1);
     }
 }

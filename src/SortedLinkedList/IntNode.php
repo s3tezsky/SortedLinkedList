@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SortedLinkedList;
 
-class Node
+class IntNode
 {
     public function __construct(
         public readonly int $value,

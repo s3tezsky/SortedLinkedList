@@ -4,23 +4,56 @@ declare(strict_types=1);
 
 namespace App\SortedLinkedList;
 
+use LogicException;
+
 class SortedLinkedList
 {
-    private ?Node $head = null;
+    private IntNode|StringNode|null $head = null;
 
     /**
-     * @param array<int> $values
+     * @param array<int>|array<string> $values
      */
     public function __construct(array $values = [])
     {
         foreach ($values as $value) {
+            // @todo: Throw an exception when unsupported type of $value is passed
             $this->add($value);
         }
     }
 
-    public function add(int $value): void
+    public function add(int|string $value): void
     {
-        $newNode = new Node($value);
+        if (is_int($value)) {
+            $this->addInt($value);
+        }
+
+        if (is_string($value)) {
+            $this->addString($value);
+        }
+    }
+
+    /**
+     * @return array<int>|array<string>
+     */
+    public function toArray(): array
+    {
+        $values = [];
+        $current = $this->head;
+
+        while ($current !== null) {
+            $values[] = $current->value;
+            $current = $current->next;
+        }
+        return $values;
+    }
+
+    private function addInt(int $value): void
+    {
+        $newNode = new IntNode($value);
+
+        if (! ($this->head instanceof IntNode || $this->head === null)) {
+            throw new LogicException(); // @todo: Better exception
+        }
 
         if ($this->head === null || $newNode->value < $this->head->value) {
             $newNode->next = $this->head;
@@ -37,18 +70,26 @@ class SortedLinkedList
         $currentNode->next = $newNode;
     }
 
-    /**
-     * @return array<int>
-     */
-    public function toArray(): array
+    private function addString(string $value): void
     {
-        $values = [];
-        $current = $this->head;
+        $newNode = new StringNode($value);
 
-        while ($current !== null) {
-            $values[] = $current->value;
-            $current = $current->next;
+        if (! ($this->head instanceof StringNode || $this->head === null)) {
+            throw new LogicException(); // @todo: Better exception
         }
-        return $values;
+
+        if ($this->head === null || strcasecmp($newNode->value, $this->head->value) < 0) {
+            $newNode->next = $this->head;
+            $this->head = $newNode;
+            return;
+        }
+
+        $currentNode = $this->head;
+        while ($currentNode->next !== null && strcasecmp($currentNode->next->value, $newNode->value) < 0) {
+            $currentNode = $currentNode->next;
+        }
+
+        $newNode->next = $currentNode->next;
+        $currentNode->next = $newNode;
     }
 }
