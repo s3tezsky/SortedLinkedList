@@ -40,6 +40,19 @@ class SortedLinkedList implements Countable, IteratorAggregate
         }
     }
 
+    public function contains(int|string $value): bool
+    {
+        $currentNode = $this->head;
+        while ($currentNode !== null) {
+            if ($value === $currentNode->value) {
+                return true;
+            }
+            $currentNode = $currentNode->next;
+        }
+
+        return false;
+    }
+
     /**
      * @return array<int>|array<string>
      */

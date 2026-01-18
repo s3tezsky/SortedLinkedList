@@ -21,6 +21,9 @@ count($list); // The result is: 4
 foreach ($list as $key => $value) {
 // ...
 }
+
+// We can check existence of value by `contains()` method.
+$list->contains(5); // The result is: true
 ```
 
 # Development

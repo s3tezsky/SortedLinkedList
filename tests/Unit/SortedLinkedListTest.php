@@ -159,7 +159,27 @@ class SortedLinkedListTest extends TestCase
 
         self::assertSame(
             [1, 2, 5, 8],
-            iterator_to_array($list)
+            iterator_to_array($list),
         );
+    }
+
+    public function testContainsValueInIntegerList(): void
+    {
+        $list = new SortedLinkedList([5, 1, 8, 2]);
+
+        self::assertTrue($list->contains(2));
+        self::assertTrue($list->contains(5));
+        self::assertFalse($list->contains(3));
+        self::assertFalse($list->contains(0));
+    }
+
+    public function testContainsValueInStringList(): void
+    {
+        $list = new SortedLinkedList(['apple', 'mango', 'orange', 'banana']);
+
+        self::assertTrue($list->contains('mango'));
+        self::assertTrue($list->contains('orange'));
+        self::assertFalse($list->contains('Apple'));
+        self::assertFalse($list->contains('car'));
     }
 }
