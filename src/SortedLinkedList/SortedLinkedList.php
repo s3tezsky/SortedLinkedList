@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace App\SortedLinkedList;
 
 use Countable;
+use IteratorAggregate;
+use Traversable;
 
-class SortedLinkedList implements Countable
+/**
+ * @implements IteratorAggregate<int, int|string>
+ */
+class SortedLinkedList implements Countable, IteratorAggregate
 {
     private IntNode|StringNode|null $head = null;
 
@@ -60,6 +65,18 @@ class SortedLinkedList implements Countable
         }
 
         return $i;
+    }
+
+    /**
+     * @return Traversable<int, int>|Traversable<int, string>
+     */
+    public function getIterator(): Traversable
+    {
+        $currentNode = $this->head;
+        while ($currentNode !== null) {
+            yield $currentNode->value;
+            $currentNode = $currentNode->next;
+        }
     }
 
     private function addInt(int $value): void

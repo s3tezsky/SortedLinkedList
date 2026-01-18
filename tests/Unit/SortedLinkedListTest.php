@@ -152,4 +152,14 @@ class SortedLinkedListTest extends TestCase
             [[4, 8, 9], [2, 7, 8, 5], 7],
         ];
     }
+
+    public function testTraversable(): void
+    {
+        $list = new SortedLinkedList([5, 1, 8, 2]);
+
+        self::assertSame(
+            [1, 2, 5, 8],
+            iterator_to_array($list)
+        );
+    }
 }
