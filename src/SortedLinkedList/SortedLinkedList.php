@@ -53,6 +53,31 @@ class SortedLinkedList implements Countable, IteratorAggregate
         return false;
     }
 
+    public function remove(int|string $value): void
+    {
+        if ($this->head === null) {
+            throw new ValueNotPresentInList($value, 'Value cannot be removed from the list. The list does not contain expected value.');
+        }
+
+        if ($this->head->value === $value) {
+            $this->head = $this->head->next;
+            return;
+        }
+
+        $currentNode = $this->head;
+        while ($currentNode->next !== null) {
+            if ($currentNode->next->value !== $value) {
+                $currentNode = $currentNode->next;
+                continue;
+            }
+
+            $currentNode->next = $currentNode->next->next;
+            return;
+        }
+
+        throw new ValueNotPresentInList($value, 'Value cannot be removed from the list. The list does not contain expected value.');
+    }
+
     /**
      * @return array<int>|array<string>
      */

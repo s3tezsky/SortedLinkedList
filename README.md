@@ -24,6 +24,12 @@ foreach ($list as $key => $value) {
 
 // We can check existence of value by `contains()` method.
 $list->contains(5); // The result is: true
+
+// Item from list can be removed by `remove()` method.
+$list->remove(5); // The list is: 1 -> 4 -> 8
+
+// When the value is not present in list the exception `ValueNotPresentInList` is thrown.
+$list->remove(2); // Throws ValueNotPresentInList exception
 ```
 
 # Development

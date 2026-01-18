@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use App\SortedLinkedList\NodeValueTypeMismatch;
 use App\SortedLinkedList\SortedLinkedList;
 use App\SortedLinkedList\UnsupportedTypeOfNodeValue;
+use App\SortedLinkedList\ValueNotPresentInList;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -181,5 +182,88 @@ class SortedLinkedListTest extends TestCase
         self::assertTrue($list->contains('orange'));
         self::assertFalse($list->contains('Apple'));
         self::assertFalse($list->contains('car'));
+    }
+
+    /**
+     * @param array<int> $initialValues
+     * @param array<int> $removingValues
+     * @param array<int> $expectedResult
+     */
+    #[DataProvider('integerValuesForRemovalFromListDataProvider')]
+    public function testRemoveValueFromIntegerList(array $initialValues, array $removingValues, array $expectedResult): void
+    {
+        $list = new SortedLinkedList($initialValues);
+        foreach ($removingValues as $removingValue) {
+            $list->remove($removingValue);
+        }
+
+        self::assertEquals($expectedResult, $list->toArray());
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public static function integerValuesForRemovalFromListDataProvider(): array
+    {
+        return [
+            [[5, 1, 8], [1], [5, 8]],
+            [[1, 5, 7, 3, 6], [3, 7], [1, 5, 6]],
+            [[2, 4, 6, 8], [6, 8], [2, 4]],
+        ];
+    }
+
+    /**
+     * @param array<string> $initialValues
+     * @param array<string> $removingValues
+     * @param array<string> $expectedResult
+     */
+    #[DataProvider('stringValuesForRemovalFromListDataProvider')]
+    public function testRemoveValueFromStringList(array $initialValues, array $removingValues, array $expectedResult): void
+    {
+        $list = new SortedLinkedList($initialValues);
+        foreach ($removingValues as $removingValue) {
+            $list->remove($removingValue);
+        }
+
+        self::assertEquals($expectedResult, $list->toArray());
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public static function stringValuesForRemovalFromListDataProvider(): array
+    {
+        return [
+            [['orange', 'mango', 'apple'], ['apple'], ['mango', 'orange']],
+            [['banana', 'apple', 'orange', 'lemon', 'coconut'], ['banana', 'orange'], ['apple', 'coconut', 'lemon']],
+            [['banana', 'mango', 'orange', 'lemon'], ['mango', 'orange'], ['banana', 'lemon']],
+        ];
+    }
+
+    public function testRemoveNonExistentValueFromIntegerListThrowsException(): void
+    {
+        $list = new SortedLinkedList([5, 1, 8, 2]);
+
+        $this->expectException(ValueNotPresentInList::class);
+        $this->expectExceptionMessage('Value cannot be removed from the list. The list does not contain expected value.');
+        $list->remove(3);
+    }
+
+    public function testRemoveNonExistentValueFromEmptyListThrowsException(): void
+    {
+        $list = new SortedLinkedList();
+
+        $this->expectException(ValueNotPresentInList::class);
+        $this->expectExceptionMessage('Value cannot be removed from the list. The list does not contain expected value.');
+        $list->remove(3);
+    }
+
+    public function testRemoveNonExistentValueFromStringListThrowsException(): void
+    {
+        $list = new SortedLinkedList(['banana', 'mango', 'orange', 'lemon']);
+
+        $this->expectException(ValueNotPresentInList::class);
+        $this->expectExceptionMessage('Value cannot be removed from the list. The list does not contain expected value.');
+        $list->remove('coconut');
     }
 }
