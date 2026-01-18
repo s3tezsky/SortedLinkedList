@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
@@ -18,4 +19,7 @@ return ECSConfig::configure()
         strict: true,
         cleanCode: true,
     )
-    ->withPhpCsFixerSets(perCS30: true);
+    ->withPhpCsFixerSets(perCS30: true)
+    ->withSkip([
+        LineLengthFixer::class,
+    ]);

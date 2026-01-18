@@ -16,7 +16,10 @@ class SortedLinkedList
     public function __construct(array $values = [])
     {
         foreach ($values as $value) {
-            // @todo: Throw an exception when unsupported type of $value is passed
+            if (! $this->isTypeOfValueSupported($value)) {
+                throw new UnsupportedTypeOfNodeValue($value);
+            }
+
             $this->add($value);
         }
     }
@@ -91,5 +94,10 @@ class SortedLinkedList
 
         $newNode->next = $currentNode->next;
         $currentNode->next = $newNode;
+    }
+
+    private function isTypeOfValueSupported(mixed $value): bool
+    {
+        return is_int($value) || is_string($value);
     }
 }

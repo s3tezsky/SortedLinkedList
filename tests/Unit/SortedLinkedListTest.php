@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\SortedLinkedList\SortedLinkedList;
+use App\SortedLinkedList\UnsupportedTypeOfNodeValue;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class SortedLinkedListTest extends TestCase
 {
@@ -88,5 +91,34 @@ class SortedLinkedListTest extends TestCase
         $sortedLinkedList = new SortedLinkedList();
         $sortedLinkedList->add('orange');
         $sortedLinkedList->add(1);
+    }
+
+    #[DataProvider('invalidTypesForCreationDataProvider')]
+    public function testCreateSortedLinkedListWithUnsupportedTypeFloat(
+        mixed $invalidValue,
+        string $invalidTypeName,
+    ): void {
+        $this->expectException(UnsupportedTypeOfNodeValue::class);
+        $this->expectExceptionMessage(sprintf(
+            'Unsupported type of value passed "%s". Allowed types: "integer, string".',
+            $invalidTypeName,
+        ));
+
+        /** @phpstan-ignore argument.type */
+        new SortedLinkedList([3, 1, $invalidValue]);
+    }
+
+    /**
+     * @return array<int, array<mixed>>
+     */
+    public static function invalidTypesForCreationDataProvider(): array
+    {
+        return [
+            [1.5, 'double'],
+            [false, 'boolean'],
+            [new stdClass(), 'object'],
+            [[], 'array'],
+            [null, 'NULL'],
+        ];
     }
 }
