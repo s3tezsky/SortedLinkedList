@@ -18,8 +18,10 @@ class SortedLinkedList implements Countable, IteratorAggregate
     /**
      * @param array<int>|array<string> $values
      */
-    public function __construct(array $values = [])
-    {
+    public function __construct(
+        array $values = [],
+        private readonly SortOrder $sortOrder = SortOrder::ASC,
+    ) {
         foreach ($values as $value) {
             if (! $this->isTypeOfValueSupported($value)) {
                 throw new UnsupportedTypeOfNodeValue($value);
@@ -129,19 +131,27 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
         $newNode = new IntNode($value);
 
-        if ($this->head === null || $newNode->value < $this->head->value) {
+        if ($this->head === null || $this->shouldBeIntBeforeValue($newNode->value, $this->head->value)) {
             $newNode->next = $this->head;
             $this->head = $newNode;
             return;
         }
 
         $currentNode = $this->head;
-        while ($currentNode->next !== null && $currentNode->next->value < $newNode->value) {
+        while ($currentNode->next !== null && ! $this->shouldBeIntBeforeValue($newNode->value, $currentNode->next->value)) {
             $currentNode = $currentNode->next;
         }
 
         $newNode->next = $currentNode->next;
         $currentNode->next = $newNode;
+    }
+
+    private function shouldBeIntBeforeValue(int $newValue, int $value): bool
+    {
+        return match ($this->sortOrder) {
+            SortOrder::ASC => $newValue < $value,
+            SortOrder::DESC => $newValue > $value,
+        };
     }
 
     private function addString(string $value): void
@@ -156,19 +166,27 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
         $newNode = new StringNode($value);
 
-        if ($this->head === null || strcasecmp($newNode->value, $this->head->value) < 0) {
+        if ($this->head === null || $this->shouldBeStringBeforeValue($newNode->value, $this->head->value)) {
             $newNode->next = $this->head;
             $this->head = $newNode;
             return;
         }
 
         $currentNode = $this->head;
-        while ($currentNode->next !== null && strcasecmp($currentNode->next->value, $newNode->value) < 0) {
+        while ($currentNode->next !== null && ! $this->shouldBeStringBeforeValue($newNode->value, $currentNode->next->value)) {
             $currentNode = $currentNode->next;
         }
 
         $newNode->next = $currentNode->next;
         $currentNode->next = $newNode;
+    }
+
+    private function shouldBeStringBeforeValue(string $newValue, string $value): bool
+    {
+        return match ($this->sortOrder) {
+            SortOrder::ASC => strcasecmp($newValue, $value) < 0,
+            SortOrder::DESC => strcasecmp($newValue, $value) > 0,
+        };
     }
 
     private function isTypeOfValueSupported(mixed $value): bool

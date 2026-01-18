@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use App\SortedLinkedList\NodeValueTypeMismatch;
 use App\SortedLinkedList\SortedLinkedList;
+use App\SortedLinkedList\SortOrder;
 use App\SortedLinkedList\UnsupportedTypeOfNodeValue;
 use App\SortedLinkedList\ValueNotPresentInList;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -20,12 +21,26 @@ class SortedLinkedListTest extends TestCase
         self::assertSame([1, 2, 3, 4, 5, 6], $sortedLinkedList->toArray());
     }
 
+    public function testCreateSortedLinkedListFromIntegersSortedDesc(): void
+    {
+        $sortedLinkedList = new SortedLinkedList([5, 3, 6, 1, 2, 4], SortOrder::DESC);
+        self::assertSame([6, 5, 4, 3, 2, 1], $sortedLinkedList->toArray());
+    }
+
     public function testAddIntToSortedLinkedListFromIntegers(): void
     {
         $sortedLinkedList = new SortedLinkedList([3, 6, 1, 4]);
         $sortedLinkedList->add(5);
         $sortedLinkedList->add(2);
         self::assertSame([1, 2, 3, 4, 5, 6], $sortedLinkedList->toArray());
+    }
+
+    public function testAddIntToSortedLinkedListFromIntegersSortedDesc(): void
+    {
+        $sortedLinkedList = new SortedLinkedList([3, 6, 1, 4], SortOrder::DESC);
+        $sortedLinkedList->add(5);
+        $sortedLinkedList->add(2);
+        self::assertSame([6, 5, 4, 3, 2, 1], $sortedLinkedList->toArray());
     }
 
     public function testAddIntToSortedLinkedList(): void
@@ -36,10 +51,24 @@ class SortedLinkedListTest extends TestCase
         self::assertSame([2, 5], $sortedLinkedList->toArray());
     }
 
+    public function testAddIntToSortedLinkedListSortedDesc(): void
+    {
+        $sortedLinkedList = new SortedLinkedList(sortOrder: SortOrder::DESC);
+        $sortedLinkedList->add(5);
+        $sortedLinkedList->add(2);
+        self::assertSame([5, 2], $sortedLinkedList->toArray());
+    }
+
     public function testCreateSortedLinkedListFromStrings(): void
     {
         $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple']);
         self::assertSame(['apple', 'banana', 'mango', 'pineapple'], $sortedLinkedList->toArray());
+    }
+
+    public function testCreateSortedLinkedListFromStringsSortedDesc(): void
+    {
+        $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple'], SortOrder::DESC);
+        self::assertSame(['pineapple', 'mango', 'banana', 'apple'], $sortedLinkedList->toArray());
     }
 
     public function testAddStringToSortedLinkedListFromStrings(): void
@@ -50,6 +79,14 @@ class SortedLinkedListTest extends TestCase
         self::assertSame(['apple', 'banana', 'lemon', 'mango', 'orange', 'pineapple'], $sortedLinkedList->toArray());
     }
 
+    public function testAddStringToSortedLinkedListFromStringsSortedDesc(): void
+    {
+        $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple'], sortOrder: SortOrder::DESC);
+        $sortedLinkedList->add('orange');
+        $sortedLinkedList->add('lemon');
+        self::assertSame(['pineapple', 'orange', 'mango', 'lemon', 'banana', 'apple'], $sortedLinkedList->toArray());
+    }
+
     public function testAddStringToSortedLinkedList(): void
     {
         $sortedLinkedList = new SortedLinkedList();
@@ -58,6 +95,16 @@ class SortedLinkedListTest extends TestCase
         $sortedLinkedList->add('lemon');
         $sortedLinkedList->add('Mango');
         self::assertSame(['Banana', 'lemon', 'Mango', 'orange'], $sortedLinkedList->toArray());
+    }
+
+    public function testAddStringToSortedLinkedListSortedDesc(): void
+    {
+        $sortedLinkedList = new SortedLinkedList(sortOrder: SortOrder::DESC);
+        $sortedLinkedList->add('orange');
+        $sortedLinkedList->add('Banana');
+        $sortedLinkedList->add('lemon');
+        $sortedLinkedList->add('Mango');
+        self::assertSame(['orange', 'Mango', 'lemon', 'Banana'], $sortedLinkedList->toArray());
     }
 
     public function testAddStringToSortedLinkedListFromIntegersThrowsException(): void

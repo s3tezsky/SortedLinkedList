@@ -30,6 +30,13 @@ $list->remove(5); // The list is: 1 -> 4 -> 8
 
 // When the value is not present in list the exception `ValueNotPresentInList` is thrown.
 $list->remove(2); // Throws ValueNotPresentInList exception
+
+// The list is sorted in ascending order by default.
+// We can make it in descending order by passing an optional argument on initializing the SortedLinkedList
+$listDesc = new SortedLinkedList(sortOrder: SortOrder::DESC);
+$listDesc->add(2); // The list is: 2
+$listDesc->add(5); // The list is: 5 -> 2
+$listDesc->add(1); // The list is: 5 -> 2 -> 1
 ```
 
 # Development
