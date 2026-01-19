@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\SortedLinkedList;
 
 /**
+ * @internal
  * @template T of int|string
  */
 class Node
