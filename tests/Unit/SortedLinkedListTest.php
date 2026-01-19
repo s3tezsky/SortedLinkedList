@@ -29,6 +29,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddIntToSortedLinkedListFromIntegers(): void
     {
+        /** @var SortedLinkedList<int> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList([3, 6, 1, 4]);
         $sortedLinkedList->add(5);
         $sortedLinkedList->add(2);
@@ -37,6 +38,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddIntToSortedLinkedListFromIntegersSortedDesc(): void
     {
+        /** @var SortedLinkedList<int> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList([3, 6, 1, 4], SortOrder::DESC);
         $sortedLinkedList->add(5);
         $sortedLinkedList->add(2);
@@ -73,6 +75,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddStringToSortedLinkedListFromStrings(): void
     {
+        /** @var SortedLinkedList<string> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple']);
         $sortedLinkedList->add('orange');
         $sortedLinkedList->add('lemon');
@@ -81,6 +84,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddStringToSortedLinkedListFromStringsSortedDesc(): void
     {
+        /** @var SortedLinkedList<string> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList(['banana', 'apple', 'mango', 'pineapple'], sortOrder: SortOrder::DESC);
         $sortedLinkedList->add('orange');
         $sortedLinkedList->add('lemon');
@@ -89,6 +93,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddStringToSortedLinkedList(): void
     {
+        /** @var SortedLinkedList<string> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList();
         $sortedLinkedList->add('orange');
         $sortedLinkedList->add('Banana');
@@ -99,6 +104,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testAddStringToSortedLinkedListSortedDesc(): void
     {
+        /** @var SortedLinkedList<string> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList(sortOrder: SortOrder::DESC);
         $sortedLinkedList->add('orange');
         $sortedLinkedList->add('Banana');
@@ -112,7 +118,9 @@ class SortedLinkedListTest extends TestCase
         $this->expectException(NodeValueTypeMismatch::class);
         $this->expectExceptionMessage('Value of type "string" cannot be added to this "App\SortedLinkedList\SortedLinkedList". Only type of "integer" can be added.');
 
+        /** @var SortedLinkedList<int> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList([5]);
+        /** @phpstan-ignore argument.type */
         $sortedLinkedList->add('Banana');
     }
 
@@ -131,7 +139,9 @@ class SortedLinkedListTest extends TestCase
         $this->expectException(NodeValueTypeMismatch::class);
         $this->expectExceptionMessage('Value of type "integer" cannot be added to this "App\SortedLinkedList\SortedLinkedList". Only type of "string" can be added.');
 
+        /** @var SortedLinkedList<string> $sortedLinkedList */
         $sortedLinkedList = new SortedLinkedList(['Banana']);
+        /** @phpstan-ignore argument.type */
         $sortedLinkedList->add(5);
     }
 
@@ -175,7 +185,7 @@ class SortedLinkedListTest extends TestCase
     }
 
     /**
-     * @param array<int, int> $initialValues
+     * @param array<int> $initialValues
      * @param array<int, int> $addingValues
      */
     #[DataProvider('valuesForCountableTestDataProvider')]
@@ -213,6 +223,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testContainsValueInIntegerList(): void
     {
+        /** @var SortedLinkedList<int> $list */
         $list = new SortedLinkedList([5, 1, 8, 2]);
 
         self::assertTrue($list->contains(2));
@@ -223,6 +234,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testContainsValueInStringList(): void
     {
+        /** @var SortedLinkedList<string> $list */
         $list = new SortedLinkedList(['apple', 'mango', 'orange', 'banana']);
 
         self::assertTrue($list->contains('mango'));
@@ -289,6 +301,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testRemoveNonExistentValueFromIntegerListThrowsException(): void
     {
+        /** @var SortedLinkedList<int> $list */
         $list = new SortedLinkedList([5, 1, 8, 2]);
 
         $this->expectException(ValueNotPresentInList::class);
@@ -307,6 +320,7 @@ class SortedLinkedListTest extends TestCase
 
     public function testRemoveNonExistentValueFromStringListThrowsException(): void
     {
+        /** @var SortedLinkedList<string> $list */
         $list = new SortedLinkedList(['banana', 'mango', 'orange', 'lemon']);
 
         $this->expectException(ValueNotPresentInList::class);

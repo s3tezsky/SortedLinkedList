@@ -10,16 +10,20 @@ use LogicException;
 use Traversable;
 
 /**
- * @implements IteratorAggregate<int, int|string>
+ * @template T of int|string
+ * @implements IteratorAggregate<int, T>
  */
 class SortedLinkedList implements Countable, IteratorAggregate
 {
+    /**
+     * @var Node<T>|null
+     */
     private ?Node $head = null;
 
     private ?ListType $listType = null;
 
     /**
-     * @param array<int>|array<string> $values
+     * @param array<T> $values
      */
     public function __construct(
         array $values = [],
@@ -34,6 +38,9 @@ class SortedLinkedList implements Countable, IteratorAggregate
         }
     }
 
+    /**
+     * @param T $value
+     */
     public function add(int|string $value): void
     {
         if ($this->listType === null) {
@@ -67,6 +74,9 @@ class SortedLinkedList implements Countable, IteratorAggregate
         $currentNode->next = $newNode;
     }
 
+    /**
+     * @param T $value
+     */
     public function contains(int|string $value): bool
     {
         $currentNode = $this->head;
@@ -80,6 +90,9 @@ class SortedLinkedList implements Countable, IteratorAggregate
         return false;
     }
 
+    /**
+     * @param T $value
+     */
     public function remove(int|string $value): void
     {
         if ($this->head === null) {
@@ -106,7 +119,7 @@ class SortedLinkedList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return array<int>|array<string>
+     * @return list<T>
      */
     public function toArray(): array
     {
@@ -133,7 +146,7 @@ class SortedLinkedList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return Traversable<int, int>|Traversable<int, string>
+     * @return Traversable<int, T>
      */
     public function getIterator(): Traversable
     {
@@ -144,6 +157,10 @@ class SortedLinkedList implements Countable, IteratorAggregate
         }
     }
 
+    /**
+     * @param Node<T> $newNode
+     * @param Node<T> $node
+     */
     private function shouldBeBeforeNode(Node $newNode, Node $node): bool
     {
         if ($this->listType === ListType::Int) {
