@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
@@ -22,4 +23,5 @@ return ECSConfig::configure()
     ->withPhpCsFixerSets(perCS30: true)
     ->withSkip([
         LineLengthFixer::class,
+        GeneralPhpdocAnnotationRemoveFixer::class,
     ]);

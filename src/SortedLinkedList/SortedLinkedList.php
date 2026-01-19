@@ -24,6 +24,9 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
     /**
      * @param array<T> $values
+     * @throws NodeValueTypeMismatch
+     * @throws UnsupportedListType
+     * @throws UnsupportedTypeOfNodeValue
      */
     public function __construct(
         array $values = [],
@@ -40,14 +43,17 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
     /**
      * @param T $value
+     * @throws NodeValueTypeMismatch
+     * @throws UnsupportedListType
      */
     public function add(int|string $value): void
     {
+        $valueListType = ListType::getTypeFromValue($value);
+
         if ($this->listType === null) {
-            $this->listType = ListType::getTypeFromValue($value);
+            $this->listType = $valueListType;
         }
 
-        $valueListType = ListType::getTypeFromValue($value);
         if ($this->listType !== $valueListType) {
             throw new NodeValueTypeMismatch(sprintf(
                 'Value of type "%s" cannot be added to this "%s". Only type of "%s" can be added.',
@@ -92,6 +98,7 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
     /**
      * @param T $value
+     * @throws ValueNotPresentInList
      */
     public function remove(int|string $value): void
     {
@@ -160,6 +167,7 @@ class SortedLinkedList implements Countable, IteratorAggregate
     /**
      * @param Node<T> $newNode
      * @param Node<T> $node
+     * @throws NodeValueTypeMismatch
      */
     private function shouldBeBeforeNode(Node $newNode, Node $node): bool
     {
@@ -172,7 +180,7 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
         if ($this->listType === ListType::String) {
             if (! is_string($newNode->value) || ! is_string($node->value)) {
-                throw new LogicException('Both of compared values must be type of string.'); // @todo: Better exception
+                throw new NodeValueTypeMismatch('Both of compared values must be type of string.');
             }
             $stringComparison = strcasecmp($newNode->value, $node->value);
             return match ($this->sortOrder) {
