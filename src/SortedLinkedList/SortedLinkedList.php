@@ -126,6 +126,7 @@ class SortedLinkedList implements Countable, IteratorAggregate
     }
 
     /**
+     * @internal
      * @return list<T>
      */
     public function toArray(): array
