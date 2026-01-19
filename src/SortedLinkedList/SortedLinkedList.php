@@ -6,6 +6,7 @@ namespace App\SortedLinkedList;
 
 use Countable;
 use IteratorAggregate;
+use LogicException;
 use Traversable;
 
 /**
@@ -13,7 +14,9 @@ use Traversable;
  */
 class SortedLinkedList implements Countable, IteratorAggregate
 {
-    private IntNode|StringNode|null $head = null;
+    private ?Node $head = null;
+
+    private ?ListType $listType = null;
 
     /**
      * @param array<int>|array<string> $values
@@ -33,13 +36,35 @@ class SortedLinkedList implements Countable, IteratorAggregate
 
     public function add(int|string $value): void
     {
-        if (is_int($value)) {
-            $this->addInt($value);
+        if ($this->listType === null) {
+            $this->listType = ListType::getTypeFromValue($value);
         }
 
-        if (is_string($value)) {
-            $this->addString($value);
+        $valueListType = ListType::getTypeFromValue($value);
+        if ($this->listType !== $valueListType) {
+            throw new NodeValueTypeMismatch(sprintf(
+                'Value of type "%s" cannot be added to this "%s". Only type of "%s" can be added.',
+                $valueListType->value,
+                self::class,
+                $this->listType->value,
+            ));
         }
+
+        $newNode = new Node($value);
+
+        if ($this->head === null || $this->shouldBeBeforeNode($newNode, $this->head)) {
+            $newNode->next = $this->head;
+            $this->head = $newNode;
+            return;
+        }
+
+        $currentNode = $this->head;
+        while ($currentNode->next !== null && ! $this->shouldBeBeforeNode($newNode, $currentNode->next)) {
+            $currentNode = $currentNode->next;
+        }
+
+        $newNode->next = $currentNode->next;
+        $currentNode->next = $newNode;
     }
 
     public function contains(int|string $value): bool
@@ -119,74 +144,27 @@ class SortedLinkedList implements Countable, IteratorAggregate
         }
     }
 
-    private function addInt(int $value): void
+    private function shouldBeBeforeNode(Node $newNode, Node $node): bool
     {
-        if (! ($this->head instanceof IntNode || $this->head === null)) {
-            throw new NodeValueTypeMismatch(sprintf(
-                'Value of type "integer" cannot be added to this "%s". Only type of "%s" can be added.',
-                self::class,
-                gettype($this->head->value),
-            ));
+        if ($this->listType === ListType::Int) {
+            return match ($this->sortOrder) {
+                SortOrder::ASC => $newNode->value < $node->value,
+                SortOrder::DESC => $newNode->value > $node->value,
+            };
         }
 
-        $newNode = new IntNode($value);
-
-        if ($this->head === null || $this->shouldBeIntBeforeValue($newNode->value, $this->head->value)) {
-            $newNode->next = $this->head;
-            $this->head = $newNode;
-            return;
+        if ($this->listType === ListType::String) {
+            if (! is_string($newNode->value) || ! is_string($node->value)) {
+                throw new LogicException('Both of compared values must be type of string.'); // @todo: Better exception
+            }
+            $stringComparison = strcasecmp($newNode->value, $node->value);
+            return match ($this->sortOrder) {
+                SortOrder::ASC => $stringComparison < 0,
+                SortOrder::DESC => $stringComparison > 0,
+            };
         }
 
-        $currentNode = $this->head;
-        while ($currentNode->next !== null && ! $this->shouldBeIntBeforeValue($newNode->value, $currentNode->next->value)) {
-            $currentNode = $currentNode->next;
-        }
-
-        $newNode->next = $currentNode->next;
-        $currentNode->next = $newNode;
-    }
-
-    private function shouldBeIntBeforeValue(int $newValue, int $value): bool
-    {
-        return match ($this->sortOrder) {
-            SortOrder::ASC => $newValue < $value,
-            SortOrder::DESC => $newValue > $value,
-        };
-    }
-
-    private function addString(string $value): void
-    {
-        if (! ($this->head instanceof StringNode || $this->head === null)) {
-            throw new NodeValueTypeMismatch(sprintf(
-                'Value of type "string" cannot be added to this "%s". Only type of "%s" can be added.',
-                self::class,
-                gettype($this->head->value),
-            ));
-        }
-
-        $newNode = new StringNode($value);
-
-        if ($this->head === null || $this->shouldBeStringBeforeValue($newNode->value, $this->head->value)) {
-            $newNode->next = $this->head;
-            $this->head = $newNode;
-            return;
-        }
-
-        $currentNode = $this->head;
-        while ($currentNode->next !== null && ! $this->shouldBeStringBeforeValue($newNode->value, $currentNode->next->value)) {
-            $currentNode = $currentNode->next;
-        }
-
-        $newNode->next = $currentNode->next;
-        $currentNode->next = $newNode;
-    }
-
-    private function shouldBeStringBeforeValue(string $newValue, string $value): bool
-    {
-        return match ($this->sortOrder) {
-            SortOrder::ASC => strcasecmp($newValue, $value) < 0,
-            SortOrder::DESC => strcasecmp($newValue, $value) > 0,
-        };
+        throw new LogicException('Not implemented ListType case for comparison.'); // @todo: Better exception
     }
 
     private function isTypeOfValueSupported(mixed $value): bool
